@@ -1,4 +1,3 @@
-
 ## filtering raw variants
 
 library(stringr)
@@ -94,14 +93,14 @@ colnames(af) <- pops
         minor <- as.numeric(str_split_fixed(tmp_pop, ":", n=6)[,4])
 
         # calculate af
-        af[,grep(i_pop, colnames(af))] <- maj/(maj+ minor)
+        af[,grep(i_pop, colnames(af))] <- minor/(maj+ minor)
 
     }
 
-# get rid of invariant sites
-dat4 <- dat3[(which(rowSums(af) > 0)),]
+# get rid of invariant sites, only a couple hundred of these
+dat4 <- dat3[(which(rowSums(af) > 0 & rowSums(af) < 28)),]
 dat3 <- dat4
-af <- af[(which(rowSums(af) > 0)),]
+af <- af[(which(rowSums(af) > 0 & rowSums(af) < 28)),]
 nrow(dat3)
 #[1] 451356
 
@@ -110,17 +109,45 @@ af.out <- (cbind(paste(dat3$Chrom, dat3$Position, sep=":"),af))
 afct.maf <- (sapply(af,function(x)
           ifelse(x > 0.5, (1-x), x)))
 
+# follow barghi et al, require at least counts of 10 for the minor allele across all populations.
+
+
+majdf <- as.data.frame(matrix(nrow=nrow(dat3), ncol=length(pops)))
+minordf <- as.data.frame(matrix(nrow=nrow(dat3), ncol=length(pops)))
+
+colnames(majdf) <- pops
+colnames(minordf) <- pops
+    # cycle through each population
+    for(i_pop in pops){
+
+        tmp_pop <- dat3[,grep(i_pop, colnames(dat3))]
+        maj <- as.numeric(str_split_fixed(tmp_pop, ":", n=6)[,3])
+        minor <- as.numeric(str_split_fixed(tmp_pop, ":", n=6)[,4])
+        # sum up reads
+        majdf[,grep(i_pop, colnames(majdf))] <- (maj)
+        minordf[,grep(i_pop, colnames(minordf))] <- (maj)
+
+    }
+
+
+keep <- ifelse(rowSums(majdf) & rowSums(minordf) > 10, TRUE, FALSE )
+sum(keep)
+# [1] 450944
+
+dat4 <- dat3[keep,]
+af_f <- af[keep,]
+
 # low maf cut off of < 0.05 in at least 4 groups.
 ## note that this corresponds to 2 reads at 40x, which seems reasonable.
-low_maf <- (apply(afct.maf, 1, function(x) {ifelse((length(which(x > 0.05)) < 4), FALSE, TRUE)}))
-sum(low_maf)
+#low_maf <- (apply(afct.maf, 1, function(x) {ifelse((length(which(x > 0.05)) < 4), FALSE, TRUE)}))
+#sum(low_maf)
 # [1] 166090
 
-dat4 <- dat3[low_maf,]
-nrow(dat4)
+#dat4 <- dat3[low_maf,]
+#nrow(dat4)
 #[1] 166090
 
-af_f <- af[low_maf,]
+#af_f <- af[low_maf,]
 
 af.out <- (cbind(paste(dat4$Chrom, dat4$Position, sep=":"),af_f))
 

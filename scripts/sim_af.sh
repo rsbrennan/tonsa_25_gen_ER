@@ -1,6 +1,6 @@
 cd ~/tonsa_genomics/analysis/cmh_simulation
 
-ls *.sync |  parallel -j 10 ' perl ~/bin/popoolation2/cmh-test.pl --input {} --output {}.cmh --min-count 2 \
+ls *.sync |  parallel -j 12 ' perl ~/bin/popoolation2/cmh-test.pl --input {} --output {}.cmh --min-count 2 \
     --min-coverage 2 --max-coverage 50000 --remove-temp \
     --population 1-2,3-4,5-6,7-8'
 
@@ -12,7 +12,9 @@ ls *.sync |  parallel -j 10 ' perl ~/bin/popoolation2/cmh-test.pl --input {} --o
 
 for i in $(ls *.sync.cmh | cut -f 1-2 -d '.'); do
 
-    awk '{print (":"[","(2}' ${i}.sync.cmh > ${i}.pval
+    awk '{OFS="\t"} {print $1":"$2,$12}' ${i}.sync.cmh > ${i}.pval
+
+    #rm ${i}.sync.cmh
 
 done
 
@@ -23,5 +25,5 @@ done
 #done
 
 #rm simulated.f25.*.sync.cmh
-rm *sync.cmh
+#rm *sync.cmh
 

@@ -23,14 +23,14 @@ perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HH.cmh --min-
 
 # run cmh between f25 samples
 
-perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output AH.f25.cmh --min-count 1 \
-    --min-coverage 2 --max-coverage 5000 --remove-temp \
-    --population 5-9,6-10,7-11,8-12
+#perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output AH.f25.cmh --min-count 1 \
+#    --min-coverage 2 --max-coverage 5000 --remove-temp \
+#    --population 5-9,6-10,7-11,8-12
 
-perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HA.f25.cmh --min-count 1 \
-    --min-coverage 2 --max-coverage 5000 --remove-temp \
-    --population 5-13,6-14,7-15,8-16
+#perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HA.f25.cmh --min-count 1 \
+#    --min-coverage 2 --max-coverage 5000 --remove-temp \
+#    --population 5-13,6-14,7-15,8-16
 
-perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HH.f25.cmh --min-count 1 \
-    --min-coverage 2 --max-coverage 5000 --remove-temp \
-    --population 5-25,6-26,7-27,8-28
+#perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HH.f25.cmh --min-count 1 \
+#    --min-coverage 2 --max-coverage 5000 --remove-temp \
+#    --population 5-25,6-26,7-27,8-28
