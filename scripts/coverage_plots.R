@@ -34,7 +34,7 @@ cov_df=do.call("rbind",cov)
 names(cov_df)[1:2]=c("depth","fraction")
 cov_df$gp <- substr(cov_df$sample, 1,6)
 
-p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) + 
+p1<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     geom_vline(xintercept= 50, color="gray60") +
     geom_vline(xintercept= 75, color="gray60") +
     geom_hline(yintercept= 0.5, color="gray60") +
@@ -47,7 +47,7 @@ p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     scale_y_continuous( breaks=c(0,.25,.5, .75, 0.9, 1))
 
 
-ggsave("~/tonsa_genomics/figures/coverage_all_probes.png", p, h=4, w=5)
+#ggsave("~/tonsa_genomics/figures/coverage_all_probes.png", p, h=4, w=5)
 
 
 #### correlate with total reads:
@@ -123,7 +123,7 @@ cov_df=do.call("rbind",cov)
 names(cov_df)[1:2]=c("depth","fraction")
 cov_df$gp <- substr(cov_df$sample, 1,6)
 
-p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) + 
+p2<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     geom_vline(xintercept= 50, color="gray60") +
     geom_vline(xintercept= 75, color="gray60") +
     geom_hline(yintercept= 0.5, color="gray60") +
@@ -136,9 +136,7 @@ p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     scale_y_continuous( breaks=c(0,.25,.5, .75, 0.9, 1))
 
 
-ggsave("~/tonsa_genomics/figures/coverage_tonsa_probes.png", p, h=4, w=5)
-
-
+#ggsave("~/tonsa_genomics/figures/coverage_tonsa_probes.png", p, h=4, w=5)
 
 
 ####################
@@ -174,7 +172,7 @@ cov_df=do.call("rbind",cov)
 names(cov_df)[1:2]=c("depth","fraction")
 cov_df$gp <- substr(cov_df$sample, 1,6)
 
-p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) + 
+p3<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     geom_vline(xintercept= 50, color="gray60") +
     geom_vline(xintercept= 75, color="gray60") +
     geom_hline(yintercept= 0.5, color="gray60") +
@@ -221,7 +219,7 @@ cov_df=do.call("rbind",cov)
 names(cov_df)[1:2]=c("depth","fraction")
 cov_df$gp <- substr(cov_df$sample, 1,6)
 
-p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) + 
+p4<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     geom_vline(xintercept= 50, color="gray60") +
     geom_vline(xintercept= 75, color="gray60") +
     geom_hline(yintercept= 0.5, color="gray60") +
@@ -234,7 +232,7 @@ p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     scale_y_continuous( breaks=c(0,.25,.5, .75, 0.9, 1))
 
 
-ggsave("~/tonsa_genomics/figures/coverage_both_probes.png", p, h=4, w=5)
+#ggsave("~/tonsa_genomics/figures/coverage_both_probes.png", p, h=4, w=5)
 
 
 ####################
@@ -269,7 +267,7 @@ cov_df=do.call("rbind",cov)
 names(cov_df)[1:2]=c("depth","fraction")
 cov_df$gp <- substr(cov_df$sample, 1,6)
 
-p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) + 
+p5<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     geom_vline(xintercept= 50, color="gray60") +
     geom_vline(xintercept= 75, color="gray60") +
     geom_hline(yintercept= 0.5, color="gray60") +
@@ -282,5 +280,6 @@ p<-ggplot(data=cov_df,aes(x= depth, y=cov_cumul, color=gp, group=sample)) +
     scale_y_continuous( breaks=c(0,.25,.5, .75, 0.9, 1))
 
 
-ggsave("~/tonsa_genomics/figures/coverage_hudsonica_probes.png", p, h=4, w=5)
-
+ggsave("~/tonsa_genomics/figures/probe_coverage.png", 
+    ggarrange(p1, p2, p3, p4, p5, nrow=3, ncol=2, common.legend=T)
+    , h=10, w=10)
