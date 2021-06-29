@@ -23,6 +23,12 @@ For my own sanity, here are the colors I'm using for each treatment:
 
 Below here is a description of scripts used in the analyses.
 
+
+### Genome annotation
+
+
+
+
 ### Data processing
 
 - Check quality of sequence data: `fastqc.sh`
@@ -38,8 +44,20 @@ Below here is a description of scripts used in the analyses.
 - Call snps with varscan: `varscan.sh`
 - Filter raw SNPs for depth, missingnesss, etc: `filter_raw_snps.R`
 
-### drift simulations
+### identify candidate SNPs
 
+- convert af file to sync file: `to_sync.py`
+- calculate cmh from sync file above: `cmh.sh`
+- annotate all snps: `annotate.py`
+
+Simulate drift expectations for significance corrections
+- simulation function: `sim_function.R`
+- simulate data: `sim_af.R`
+- calc cmh: `~/tonsa_genomics/scripts/sim_af.sh`
+- run actual sims: `sim_af.sh`
+- then take these sims and the cmh results from above, and combine into table `cmh_results.txt`: `cmh_process.R`
+
+and finally, `calc_significance.R` outputs `cmh.fdr.txt`
 
 
 ### cvtk
