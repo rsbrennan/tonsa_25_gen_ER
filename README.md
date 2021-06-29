@@ -35,6 +35,8 @@ Below here is a description of scripts used in the analyses.
 - alignment stats: `align_stats.sh`
 - merge resulting bams from each lane/sample: `merge_bams.sh`
 - plot resulting stats: `plot_alignment_stats.R`
+- Call snps with varscan: `varscan.sh`
+- Filter raw SNPs for depth, missingnesss, etc: `filter_raw_snps.R`
 
 ### drift simulations
 
