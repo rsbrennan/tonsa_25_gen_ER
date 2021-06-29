@@ -15,7 +15,7 @@ perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HA.cmh --min-
 
 perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HH.f3.cmh --min-count 1 \
     --min-coverage 2 --max-coverage 5000 --remove-temp \
-    --population 1-21,2-22,3-23,4-24
+   --population 1-21,2-22,3-23,4-24
 
 perl ~/bin/popoolation2/cmh-test.pl --input variants.sync --output HH.cmh --min-count 1 \
     --min-coverage 2 --max-coverage 5000 --remove-temp \
