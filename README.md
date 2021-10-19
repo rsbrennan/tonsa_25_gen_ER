@@ -63,5 +63,23 @@ and finally, `calc_significance.R` outputs `cmh.fdr.txt`
 ### cvtk
 
 
+### Figures
+
+- Fig. 1: 
+- Fig. 2: 
+- Fig. 3: 
+- Fig. 4:
+- Fig. 5:
+- Fig. 6:
+
+Supplemental figures:
+- Fig. S1:
+- Fig. S2:
+- Fig. S3:
+- Fig. S4:
+- Fig. S5:
+- Fig. S6:
+- Fig. S7:
+- Fig. S8:
 
 
