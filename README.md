@@ -75,7 +75,7 @@ See `tonsa.ipynb` for all analyses.
 - Fig. 3: `plots.R`
 - Fig. 4: `af_change.R` 
 - Fig. 5:
-- Fig. 6:
+- Fig. 6: `go_enrich.md`
 
 Supplemental figures:
 - Fig. S1: `plots.R` and cvtk notebook.
@@ -85,7 +85,7 @@ Supplemental figures:
 - Fig. S5: `plots.R`
 - Fig. S6: `pi.R`
 - Fig. S7: `af_change.R`
-- Fig. S8:
+- Fig. S8: `go_enrich.md`
 - Fig. S9: `af_change.R`
 - Fig. S10:
 - Fig. S11:

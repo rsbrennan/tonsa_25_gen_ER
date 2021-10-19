@@ -387,6 +387,9 @@ dat <- rbind(rbind(hh, ha), ah)
 dat <- dat[(dat$weight < 0.05),]
 nrow(dat)
 
+# to remove genes < 10, do the following
+dat <- dat[(dat$Significant > 9),]
+
 #BiocManager::install("org.Dm.eg.db")
 ### IMPORTANT!
 # trace(godata, edit=TRUE)
