@@ -70,21 +70,25 @@ See `tonsa.ipynb` for all analyses.
 
 ### Figures
 
-- Fig. 1: 
-- Fig. 2: 
-- Fig. 3: 
-- Fig. 4:
+- Fig. 1: `plots.R` 
+- Fig. 2: `plots.R`
+- Fig. 3: `plots.R`
+- Fig. 4: 
 - Fig. 5:
 - Fig. 6:
 
 Supplemental figures:
-- Fig. S1:
-- Fig. S2:
+- Fig. S1: `plots.R` and cvtk notebook.
+- Fig. S2: 
 - Fig. S3:
 - Fig. S4:
-- Fig. S5:
+- Fig. S5: `plots.R`
 - Fig. S6:
 - Fig. S7:
 - Fig. S8:
+- Fig. S9:
+- Fig. S10:
+- Fig. S11:
+- Fig. S12: `plots.R`
 
 
