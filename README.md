@@ -62,6 +62,9 @@ and finally, `calc_significance.R` outputs `cmh.fdr.txt`
 
 ### cvtk
 
+relies on the cvtk package from Vince Buffalo. Found here: https://github.com/vsbuffalo/cvtkpy
+
+See `tonsa.ipynb` for all analyses.
 
 ### Figures
 
