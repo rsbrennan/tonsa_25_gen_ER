@@ -26,7 +26,9 @@ Below here is a description of scripts used in the analyses.
 
 ### Genome annotation
 
+Followed [GAWN](https://github.com/enormandeau/gawn).
 
+Details of the annotation are in `genome_annotation.md`
 
 
 ### Data processing
