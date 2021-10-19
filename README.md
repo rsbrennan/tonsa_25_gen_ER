@@ -73,20 +73,20 @@ See `tonsa.ipynb` for all analyses.
 - Fig. 1: `plots.R` 
 - Fig. 2: `plots.R`
 - Fig. 3: `plots.R`
-- Fig. 4: 
+- Fig. 4: `af_change.R` 
 - Fig. 5:
 - Fig. 6:
 
 Supplemental figures:
 - Fig. S1: `plots.R` and cvtk notebook.
-- Fig. S2: 
-- Fig. S3:
-- Fig. S4:
+- Fig. S2: `af_change.R`
+- Fig. S3: `ld.R`
+- Fig. S4: `af_change.R`
 - Fig. S5: `plots.R`
-- Fig. S6:
-- Fig. S7:
+- Fig. S6: `pi.R`
+- Fig. S7: `af_change.R`
 - Fig. S8:
-- Fig. S9:
+- Fig. S9: `af_change.R`
 - Fig. S10:
 - Fig. S11:
 - Fig. S12: `plots.R`
