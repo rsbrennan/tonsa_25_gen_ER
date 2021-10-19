@@ -1,12 +1,10 @@
 # pipeline to analyze mitotype data
  
+This is to be run after all of the steps in `mitotypes.md`, in this same directory. See this file for instructions.
+
 This pipeline holds an automated method to analyze mitotype data for a tonsa based on the phylogeny of Figueroa et al., 2020: Phylogeography ofAcartia tonsaDana, 1849 (Calanoida: Copepoda)and phylogenetic reconstruction of the genusAcartiaDana, 1846.
 
 View the help file with: `./mitotype_pipeline.sh --help` or `./mitotype_pipeline.sh -h`
-
-This currently lives at: `/data/copepods/mitotypes` and should be executable by everyone in the lab. Let me know if there are issues.
-
-To execute the pipeline, on dott run the following:
 
 ```bash
 ./mitotype_pipeline.sh your.fasta plot_name
