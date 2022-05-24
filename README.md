@@ -87,8 +87,8 @@ Supplemental figures:
 - Fig. S7: `af_change.R`
 - Fig. S8: `go_enrich.md`
 - Fig. S9: `af_change.R`
-- Fig. S10:
-- Fig. S11:
+- Fig. S10: `scripts/mitotypes/mitotypes.md`
+- Fig. S11: `scripts/mitotypes/mitotypes.md`
 - Fig. S12: `plots.R`
 
 
