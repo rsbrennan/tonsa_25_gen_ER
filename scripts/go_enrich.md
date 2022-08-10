@@ -1,12 +1,13 @@
+
+
 # assign go terms to each gene
 
 
 
-## SNPs 
+## SNPs
 
 ~/tonsa_genomics/analysis/cmh_results.txt
-
-~/tonsa_genomics/analysis/gene_level_analysis/annotation_table1.txt'
+~/tonsa_genomics/analysis/gene_level_analysis/annotation_table1.txt
 
 ```r
 
@@ -21,9 +22,9 @@ cmh$annotation <- snp$annotation
 cmh$distance <- snp$distance
 
 # drop the lab significant loci from the list:
-cmh$ah_fdr[cmh$ah_sig_nolab == TRUE] <- NA
-cmh$ha_fdr[cmh$ha_sig_nolab == TRUE] <- NA
-cmh$hh_fdr[cmh$hh_sig_nolab == TRUE] <- NA
+#cmh$ah_fdr[cmh$ah_sig_nolab == TRUE] <- NA
+#cmh$ha_fdr[cmh$ha_sig_nolab == TRUE] <- NA
+#cmh$hh_fdr[cmh$hh_sig_nolab == TRUE] <- NA
 
 # make empty list to hold dataframes that we'll fill in
 snp_out <- vector(mode = "list", length = 4)
@@ -33,7 +34,7 @@ class_all <- c("promoter", "exon", "downstream", "intron")
 class_ids <- list(class_all, c("exon", "intron"), c("exon"), c("promoter"))
 names(class_ids) <- c("all", "genic", "exon", "promoter")
 
-for(class_index in 1:length(class_ids)){
+for(class_index in 1){
     # filter to get only the loci in the class of interest.
     tmp_filt <- cmh %>% filter(class %in% as.vector(class_ids[[class_index]]) )
     # get the unique genes from the filtered dataset we just made
@@ -93,25 +94,25 @@ for(i in 1:length(snp_out)){
     ha_sv$V2[which(ha_sv$V2 == -Inf)] <- 0
     hh_sv$V2[which(hh_sv$V2 == -Inf)] <- 0
 
-    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_aa_", 
+    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_aa_",
                             names(snp_out)[i],
                             "_goenrich.txt", sep = ""),
                 aa_sv, col.names=TRUE,
                 row.names=FALSE, quote=FALSE,sep=",")
 
-    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_ah_", 
+    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_ah_",
                             names(snp_out)[i],
                             "_goenrich.txt", sep = ""),
                 ah_sv, col.names=TRUE,
                 row.names=FALSE, quote=FALSE,sep=",")
 
-    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_ha_", 
+    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_ha_",
                             names(snp_out)[i],
                             "_goenrich.txt", sep = ""),
                 ha_sv, col.names=TRUE,
                 row.names=FALSE, quote=FALSE,sep=",")
 
-    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_hh_", 
+    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/snp_min_hh_",
                             names(snp_out)[i],
                             "_goenrich.txt", sep = ""),
                 hh_sv, col.names=TRUE,
@@ -208,10 +209,6 @@ cat ~/tonsa_genomics/analysis/go_enrich/cmh_GOterms.corrected.out | sed 's/;/,/g
 
 
 
-use the simulated af changes
-
-
-
 ```r
 library(topGO)
 library(dplyr)
@@ -237,8 +234,6 @@ length(which(lengths(unlist_genes) == 1))
 
 
 dup_genes <- which(lengths(unlist_genes) > 1)
-
-#dedup_df <- as.data.frame(matrix(ncol=ncol(annot), nrow=0))
 
 #num rows?
 num_row <- sum(lengths(unlist_genes)[dup_genes])
@@ -276,10 +271,83 @@ all <- all2
 nrow(all)
 # 92926
 
-# no lab sig:
+all$aa_all <- FALSE
+all$ah_all <- FALSE
+all$ha_all <- FALSE
+all$hh_all <- FALSE
+all$aa_all[which(all$aa_fdr < 0.01) ] <- TRUE
+all$ah_all[which(all$ah_fdr < 0.01) ] <- TRUE
+all$ha_all[which(all$ha_fdr < 0.01) ] <- TRUE
+all$hh_all[which(all$hh_fdr < 0.01) ] <- TRUE
+
+all$aa_sig <- FALSE
+all$ah_sig <- FALSE
+all$ha_sig <- FALSE
+all$hh_sig <- FALSE
+all$aa_sig[which(all$aa_fdr < 0.01 & all$ah_fdr >= 0.01 & all$ha_fdr >= 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$ah_sig[which(all$ah_fdr < 0.01 & all$aa_fdr >= 0.01 & all$ha_fdr >= 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$ha_sig[which(all$ha_fdr < 0.01 & all$ah_fdr >= 0.01 & all$aa_fdr >= 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$hh_sig[which(all$hh_fdr < 0.01 & all$ah_fdr >= 0.01 & all$ha_fdr >= 0.01 & all$aa_fdr >= 0.01)] <- TRUE
+
+# two-way overlaps
+all$aa_ah <- FALSE
+all$aa_ha <- FALSE
+all$aa_hh <- FALSE
+all$ah_ha <- FALSE
+all$ah_hh <- FALSE
+all$ha_hh <- FALSE
+
+all$aa_ah[which(all$aa_fdr < 0.01 & all$ah_fdr < 0.01 & all$ha_fdr >= 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$aa_ha[which(all$aa_fdr < 0.01 & all$ha_fdr < 0.01 & all$ah_fdr >= 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$aa_hh[which(all$aa_fdr < 0.01 & all$hh_fdr < 0.01 & all$ha_fdr >= 0.01 & all$ah_fdr >= 0.01)] <- TRUE
+all$ah_ha[which(all$ah_fdr < 0.01 & all$ha_fdr < 0.01 & all$aa_fdr >= 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$ah_hh[which(all$ah_fdr < 0.01 & all$hh_fdr < 0.01 & all$ha_fdr >= 0.01 & all$aa_fdr >= 0.01)] <- TRUE
+all$ha_hh[which(all$ha_fdr < 0.01 & all$hh_fdr < 0.01 & all$aa_fdr >= 0.01 & all$ah_fdr >= 0.01)] <- TRUE
+
+# 3-way overlaps
+all$aa_ah_ha <- FALSE
+all$aa_ah_hh <- FALSE
+all$aa_ha_hh <- FALSE
+all$ah_ha_hh <- FALSE
+
+all$aa_ah_ha[which(all$aa_fdr < 0.01 & all$ah_fdr < 0.01 & all$ha_fdr < 0.01 & all$hh_fdr >= 0.01)] <- TRUE
+all$aa_ah_hh[which(all$aa_fdr < 0.01 & all$ah_fdr < 0.01 & all$hh_fdr < 0.01 & all$ha_fdr >= 0.01)] <- TRUE
+all$aa_ha_hh[which(all$aa_fdr < 0.01 & all$ha_fdr < 0.01 & all$hh_fdr < 0.01 & all$ah_fdr >= 0.01)] <- TRUE
+all$ah_ha_hh[which(all$ha_fdr < 0.01 & all$ah_fdr < 0.01 & all$hh_fdr < 0.01 & all$aa_fdr >= 0.01)] <- TRUE
+
+# all overlaps
+all$aa_ah_ha_hh   <- FALSE
+all$aa_ah_ha_hh[which(all$aa_fdr < 0.01 & all$ah_fdr < 0.01 & all$ha_fdr < 0.01 & all$hh_fdr < 0.01)] <- TRUE
+
+
+table(all$aa_all)
+table(all$ah_all)
+table(all$ha_all)
+table(all$hh_all)
+table(all$aa_sig)
+table(all$ah_sig)
+table(all$ha_sig)
+table(all$hh_sig)
+table(all$aa_hh)
+table(all$aa_ah_ha)
+table(all$aa_ah_hh)
+table(all$aa_ah)
+table(all$aa_ha)
+table(all$aa_hh)
+table(all$ah_ha)
+table(all$ah_hh)
+table(all$ha_hh)
+table(all$aa_ah_ha_hh)
+
+
 #all <- dat %>% filter(annotation != "-")
 genes <- unique(all$annotation)
-toTest <- c("aa_sig","ah_sig_nolab", "ha_sig_nolab", "hh_sig_nolab" )
+toTest <- c("aa_all","ah_all", "ha_all", "hh_all",
+            "aa_sig","ah_sig", "ha_sig", "hh_sig",
+            "aa_ah","aa_ha","aa_hh","ah_ha","ah_hh","ha_hh",
+            "aa_ah_ha","aa_ah_hh","aa_ha_hh","ah_ha_hh",
+            "aa_ah_ha_hh")
+
 
 for(test_set in toTest){
     out <- as.data.frame(matrix(nrow=length(genes), ncol=2))
@@ -315,7 +383,7 @@ geneID2GO <- geneID2GO[2:length(geneID2GO)]
 
  for(j in c("BP", "CC", "MF")){
 
-        myGOdata <- (new("topGOdata", description="My project", 
+        myGOdata <- (new("topGOdata", description="My project",
             ontology=j, allGenes=geneList,
             annot = annFUN.gene2GO, gene2GO = geneID2GO,
             nodeSize = 5 ))
@@ -324,31 +392,34 @@ geneID2GO <- geneID2GO[2:length(geneID2GO)]
         allRes <- GenTable(myGOdata, classicFisher = resultClassic,  weight = resultWeight, orderBy = "weight", ranksOf = "weight"  ,
             topNodes = length(resultWeight@score))
         allRes$ontology <- j
-        all_filt <- allRes[which(allRes$weight < 0.05 ),]
-        out.save <- rbind(out.save,all_filt)
+        all_filt <- allRes[which(allRes$weight < 0.05 & allRes$Significant > 1 ),]
+        if(nrow(all_filt) > 0){
 
-        #### get genes in go terms
 
-        myterms =all_filt$GO.ID # change it to results.table.bh$GO.ID if working with BH corrected values
-        mygenes = genesInTerm(myGOdata, myterms)
+            out.save <- rbind(out.save,all_filt)
 
-        genes_out <- as.data.frame(matrix(nrow=0, ncol=2))
-        colnames(genes_out) <- c("goterm", "genes")
-        for (i in 1:length(myterms)){
-            myterm=myterms[i]
-            mygenesforterm= mygenes[myterm][[1]]
-            mygenesforterm=paste(mygenesforterm, collapse=',')
-            tmp_term <- data.frame(goterm = myterm, genes = mygenesforterm)
-            genes_out <- rbind(genes_out, tmp_term)
-    }
+            #### get genes in go terms
 
+            myterms =all_filt$GO.ID # change it to results.table.bh$GO.ID if working with BH corrected values
+           mygenes = genesInTerm(myGOdata, myterms)
+
+          genes_out <- as.data.frame(matrix(nrow=0, ncol=2))
+          colnames(genes_out) <- c("goterm", "genes")
+          for (i in 1:length(myterms)){
+             myterm=myterms[i]
+             mygenesforterm= mygenes[myterm][[1]]
+             mygenesforterm=paste(mygenesforterm, collapse=',')
+             tmp_term <- data.frame(goterm = myterm, genes = mygenesforterm)
+             genes_out <- rbind(genes_out, tmp_term)
+           }
+        }
     write.table(genes_out,
         paste("~/tonsa_genomics/analysis/go_enrich/",test_set, "_", j, "_genetoGOmapping.txt", sep=""),
             sep="\t",quote=F, row.names=F)
 
     }
 
-    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/", test_set, "_CMH_GO.txt", sep=""), 
+    write.table(file=paste("~/tonsa_genomics/analysis/go_enrich/", test_set, "_CMH_GO.txt", sep=""),
              out.save, col.names=TRUE,
             row.names=FALSE, quote=FALSE,sep="\t")
 
@@ -369,182 +440,161 @@ library(ggdendro)
 library(dplyr)
 library(org.Dm.eg.db)
 library(ggpubr)
+library(UpSetR)
 
-hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/hh_sig_nolab_CMH_GO.txt", header=TRUE, sep="\t")
-ha <- read.csv("~/tonsa_genomics/analysis/go_enrich/ha_sig_nolab_CMH_GO.txt", header=TRUE, sep="\t")
-ah <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_sig_nolab_CMH_GO.txt", header=TRUE, sep="\t")
-aa <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_sig_CMH_GO.txt", header=TRUE, sep="\t")
 
-hh$group <- "Greenhouse"
-ha$group <- "Warm"
-ah$group <- "Acidic"
-aa$group <- "Ambient"
+hh_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/hh_all_CMH_GO.txt", header=TRUE, sep="\t")
+ha_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/ha_all_CMH_GO.txt", header=TRUE, sep="\t")
+ah_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_all_CMH_GO.txt", header=TRUE, sep="\t")
+aa_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_all_CMH_GO.txt", header=TRUE, sep="\t")
 
-dat <- rbind(rbind(hh, ha), ah)
+hh_all_bp <- hh_all$GO.ID[hh_all$ontology == "BP"]
+ha_all_bp <- ha_all$GO.ID[ha_all$ontology == "BP"]
+ah_all_bp <- ah_all$GO.ID[ah_all$ontology == "BP"]
+aa_all_bp <- aa_all$GO.ID[aa_all$ontology == "BP"]
 
-# change p-value threshold for plotting
+aa_all[(aa_all_bp %in% ah_all_bp),]
+aa_all[(aa_all_bp %in% ha_all_bp),]
+aa_all[(aa_all_bp %in% hh_all_bp),]
+ah_all[(ah_all_bp %in% ha_all_bp),]
+ah_all[(ah_all_bp %in% hh_all_bp),]
+ha_all[(ha_all_bp %in% hh_all_bp),]
+Reduce(intersect, list(aa_all_bp,ah_all_bp,ha_all_bp))
+Reduce(intersect, list(aa_all_bp,ah_all_bp,hh_all_bp))
+Reduce(intersect, list(aa_all_bp,ha_all_bp,hh_all_bp))
+Reduce(intersect, list(ah_all_bp,ha_all_bp,hh_all_bp))
+Reduce(intersect, list(aa_all_bp,ah_all_bp,ha_all_bp,hh_all_bp))
 
-dat <- dat[(dat$weight < 0.05),]
-nrow(dat)
+all <- length(Reduce(intersect, list(aa_all_bp,ah_all_bp,ha_all_bp,hh_all_bp)))
 
-# to remove genes < 10, do the following
-dat <- dat[(dat$Significant > 9),]
 
-#BiocManager::install("org.Dm.eg.db")
-### IMPORTANT!
-# trace(godata, edit=TRUE)
-## need to edit this to work with topgo
-### on line 12: columns = c("GO", "ONTOLOGY")))
-#### change GO to GOALL
-## note that this makes the go mapping data much slower to compute.
-## this needs to be done every time youopen a new R session
+listInput <- list(Ambient = aa_all_bp,
+                  Acidification = ah_all_bp,
+                  Warming = ha_all_bp,
+                  OWA = hh_all_bp)
 
-hsGObp <- godata('org.Dm.eg.db', ont="BP", computeIC=FALSE)
-hsGOmf <- godata('org.Dm.eg.db', ont="MF", computeIC=FALSE)
-hsGOcc <- godata('org.Dm.eg.db', ont="CC",computeIC=FALSE)
 
-# pull out the go terms from the df
-gobp <- unique(as.character(dat$GO.ID[which(dat$ontology == "BP")]))
-gocc <- unique(as.character(dat$GO.ID[which(dat$ontology == "CC")]))
-gomf <- unique(as.character(dat$GO.ID[which(dat$ontology == "MF")]))
+### note that this figure in not in the supplemental. 
 
-# calculate distance matrix
-bpdist <- (mgoSim(gobp, gobp, semData=hsGObp, measure="Wang", combine=NULL))
-ccdist <- (mgoSim(gocc, gocc, semData=hsGOcc, measure="Wang", combine=NULL))
-mfdist <- (mgoSim(gomf, gomf, semData=hsGOmf, measure="Wang", combine=NULL))
-# using lapply, loop over columns and match values to the look up table. store in "new".
-# this gives us the actual names of the GO terms
-row.names(bpdist) <- paste(row.names(bpdist),(unlist(lapply(row.names(bpdist), function(x) dat$Term[match(x, dat$GO.ID)]))), sep=": ")
-colnames(bpdist) <- paste(colnames(bpdist),(unlist(lapply(colnames(bpdist), function(x) dat$Term[match(x, dat$GO.ID)]))), sep=": ")
+pdf("~/tonsa_genomics/figures/all_upSet_GOTerms_overlaps.pdf",
+   height = 4, width = 5)
+upset(fromList(listInput),keep.order = TRUE, empty.intersections = "on",
+        sets=c("OWA","Warming","Acidification","Ambient"),
+        mainbar.y.label = "Significant GO enrichment in intersecting SNP set",
+        sets.x.label = "Total number of significan GO terms",
+        point.size = 3.4, line.size = 1.2, 
+          sets.bar.color=rev(c('#6699CC',"#F2AD00", "#00A08A", "#CC3333")),
+           text.scale = c(1.1, 1.1, 1, 1, 1.5, 1))
+dev.off()
 
-row.names(ccdist) <- paste(row.names(ccdist),(unlist(lapply(row.names(ccdist), function(x) dat$Term[match(x, dat$GO.ID)]))), sep=": ")
-colnames(ccdist) <- paste(colnames(ccdist),(unlist(lapply(colnames(ccdist), function(x) dat$Term[match(x, dat$GO.ID)]))), sep=": ")
 
-row.names(mfdist) <- paste(row.names(mfdist),(unlist(lapply(row.names(mfdist), function(x) dat$Term[match(x, dat$GO.ID)]))), sep=": ")
-colnames(mfdist) <- paste(colnames(mfdist),(unlist(lapply(colnames(mfdist), function(x) dat$Term[match(x, dat$GO.ID)]))), sep=": ")
+#######
+# go enrichment for overlapping snp sets.
 
-clusterbp <- hclust(1-as.dist(bpdist), method = "ward.D2")
-clustercc <- hclust(1-as.dist(ccdist), method = "ward.D2")
-clustermf <- hclust(1-as.dist(mfdist), method = "ward.D2")
 
-#convert cluster object to use with ggplot
-dendrbp <- dendro_data(clusterbp, type="rectangle") 
-dendrcc <- dendro_data(clustercc, type="rectangle") 
-dendrmf <- dendro_data(clustermf, type="rectangle") 
+hh_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/hh_all_CMH_GO.txt", header=TRUE, sep="\t")
+ha_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/ha_all_CMH_GO.txt", header=TRUE, sep="\t")
+ah_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_all_CMH_GO.txt", header=TRUE, sep="\t")
+aa_all <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_all_CMH_GO.txt", header=TRUE, sep="\t")
 
-#your own labels (now rownames) are supplied in geom_text() and label=label
-bpplot <- ggplot() + 
-  geom_segment(data=segment(dendrbp), aes(x=x, y=y, xend=xend, yend=yend)) + 
-  #geom_text(data=label(dendr), aes(x=x, y=y, label=label, hjust=0), size=4) +
-  coord_flip() + scale_y_reverse(expand=c(0.2, 0)) + 
- scale_x_continuous(breaks = label(dendrbp)$x,
-                    labels=label(dendrbp)$label,
-                     position = "top")+
-   theme_minimal() +
-  theme(axis.title = element_blank(),
-        axis.text.y = element_text(size = rel(1.1), hjust=10),
-        panel.grid = element_blank(),
-         axis.text.x=element_blank(),
+hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/hh_sig_CMH_GO.txt", header=TRUE, sep="\t")
+ha <- read.csv("~/tonsa_genomics/analysis/go_enrich/ha_sig_CMH_GO.txt", header=TRUE, sep="\t")
+ah <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_sig_CMH_GO.txt", header=TRUE, sep="\t")
+aa <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_sig_CMH_GO.txt", header=TRUE, sep="\t")
+
+aa_ah <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_ah_CMH_GO.txt", header=TRUE, sep="\t")
+aa_ha <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_ha_CMH_GO.txt", header=TRUE, sep="\t")
+aa_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_hh_CMH_GO.txt", header=TRUE, sep="\t")
+ah_ha <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_ha_CMH_GO.txt", header=TRUE, sep="\t")
+ah_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_hh_CMH_GO.txt", header=TRUE, sep="\t")
+ha_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/ha_hh_CMH_GO.txt", header=TRUE, sep="\t")
+
+aa_ah_ha <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_ah_ha_CMH_GO.txt", header=TRUE, sep="\t")
+aa_ah_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_ah_hh_CMH_GO.txt", header=TRUE, sep="\t")
+aa_ha_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_ha_hh_CMH_GO.txt", header=TRUE, sep="\t")
+ah_ha_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/ah_ha_hh_CMH_GO.txt", header=TRUE, sep="\t")
+
+aa_ah_ha_hh <- read.csv("~/tonsa_genomics/analysis/go_enrich/aa_ah_ha_hh_CMH_GO.txt", header=TRUE, sep="\t")
+
+
+tstNm <-  c("aa_all","ah_all", "ha_all", "hh_all",
+            "aa","ah", "ha", "hh",
+            "aa_ah","aa_ha","aa_hh","ah_ha","ah_hh","ha_hh",
+            "aa_ah_ha","aa_ah_hh","aa_ha_hh","ah_ha_hh",
+            "aa_ah_ha_hh")
+
+toTest <- list(aa_all,ah_all, ha_all, hh_all,
+            aa,ah, ha, hh,
+            aa_ah,aa_ha,aa_hh,ah_ha,ah_hh,ha_hh,
+            aa_ah_ha,aa_ah_hh,aa_ha_hh,ah_ha_hh,
+            aa_ah_ha_hh)
+
+names(toTest) <- tstNm
+bp.out <- list()
+
+for (i in 1:length(toTest)){
+    bp.out[[i]] <- toTest[[i]]$GO.ID[toTest[[i]]$ontology == "BP"]
+    names(bp.out)[i] <- names(toTest)[i]
+}
+
+aa_sig <- length(bp.out[['aa']])
+ah_sig <- length(bp.out[['ah']])
+ha_sig <- length(bp.out[['ha']])
+hh_sig <- length(bp.out[['hh']])
+
+aa_ah_sig <- length(bp.out[['aa_ah']])
+aa_ha_sig <- length(bp.out[['aa_ha']])
+aa_hh_sig <- length(bp.out[['aa_hh']])
+ah_ha_sig <- length(bp.out[['ah_ha']])
+ah_hh_sig <- length(bp.out[['ah_hh']])
+ha_hh_sig <- length(bp.out[['ha_hh']])
+
+aa_ah_hh_sig <- length(bp.out[['aa_ah_hh']])
+aa_ha_hh_sig <- length(bp.out[['aa_ha_hh']])
+aa_ah_ha_sig <- length(bp.out[['aa_ah_ha']])
+ah_ha_hh_sig <- length(bp.out[['ah_ha_hh']])
+
+aa_ah_ha_hh_sig <- length(bp.out[['aa_ah_ha_hh']])
+
+
+# find overlap counts
+library(UpSetR)
+all_input <- all_overlaps <- c(
+                        "Ambient" = aa_sig,
+                        "Acidic" = ah_sig,
+                        "Warm" = ha_sig,
+                        "OWA" = hh_sig,
+                "Ambient&Acidic" = aa_ah_sig,
+                "Ambient&Warm" = aa_ha_sig,
+                "Ambient&OWA" = aa_hh_sig,
+                "Acidic&Warm" = ah_ha_sig,
+                "Acidic&OWA" = ah_hh_sig,
+                "Warm&OWA" = ha_hh_sig,
+                "Ambient&Acidic&OWA" = aa_ah_hh_sig,
+                "Ambient&Warm&OWA" = aa_ha_hh_sig,
+                "Ambient&Acidic&Warm" = aa_ah_ha_sig,
+                "Acidic&Warm&OWA" = ah_ha_hh_sig,
+                "Ambient&Acidic&Warm&OWA" = aa_ah_ha_hh_sig)
+
+
+
+
+pdf("~/tonsa_genomics/figures/all_upSet_GOTerms.pdf",
+    height = 4, width = 5)
+
+upset(fromExpression(all_input),
+        #order.by = "degree", 
+        #group.by = "sets",
+        keep.order = TRUE, empty.intersections = "on",
+        sets = c("OWA","Warm", "Acidic","Ambient"),
+        mainbar.y.label = "Significant GO enrichment in intersecting SNP set",
+        sets.x.label = "Total number of significan GO terms",
+        point.size = 3.4, line.size = 1.2, 
+          sets.bar.color=rev(c('#6699CC',"#F2AD00", "#00A08A", "#CC3333")),
+           text.scale = c(1.1, 1.1, 1, 1, 1.5, 1)
 )
-ccplot <- ggplot() + 
-  geom_segment(data=segment(dendrcc), aes(x=x, y=y, xend=xend, yend=yend)) + 
-  #geom_text(data=label(dendr), aes(x=x, y=y, label=label, hjust=0), size=4) +
-  coord_flip() + scale_y_reverse(expand=c(0.2, 0)) + 
- scale_x_continuous(breaks = label(dendrcc)$x,
-                    labels=label(dendrcc)$label,
-                     position = "top")+
-   theme_minimal() +
-  theme(axis.title = element_blank(),
-        axis.text.y = element_text(size = rel(1.1), hjust=10),
-        panel.grid = element_blank(),
-         axis.text.x=element_blank(),
-)
 
-mfplot <- ggplot() + 
-  geom_segment(data=segment(dendrmf), aes(x=x, y=y, xend=xend, yend=yend)) + 
-  #geom_text(data=label(dendr), aes(x=x, y=y, label=label, hjust=0), size=4) +
-  coord_flip() + scale_y_reverse(expand=c(0.2, 0)) + 
- scale_x_continuous(breaks = label(dendrmf)$x,
-                    labels=label(dendrmf)$label,
-                     position = "top")+
-   theme_minimal() +
-  theme(axis.title = element_blank(),
-        axis.text.y = element_text(size = rel(1.1), hjust=10),
-        panel.grid = element_blank(),
-         axis.text.x=element_blank(),
-)
+dev.off()
 
-ggsave("~/tonsa_genomics/figures/topgo_enrich_bp_cluster.pdf",bpplot, h=11, w=7)
-ggsave("~/tonsa_genomics/figures/topgo_enrich_cc_cluster.pdf",ccplot, h=3.6, w=7)
-ggsave("~/tonsa_genomics/figures/topgo_enrich_mf_cluster.pdf",mfplot, h=4, w=7)
-
-
-# make plot in same order as dendrogram
-
-dat$group <- factor(dat$group, levels = c("Acidic","Greenhouse", "Warm"))
-
-bp_dat <- dat[dat$ontology == "BP",]
-cc_dat <- dat[dat$ontology == "CC",]
-mf_dat <- dat[dat$ontology == "MF",]
-
-bp_labs <- substring(label(dendrbp)$label,13)
-cc_labs <- substring(label(dendrcc)$label,13)
-mf_labs <- substring(label(dendrmf)$label,13)
-
-dat$Term <- factor(dat$Term, levels = c(bp_labs,cc_labs,mf_labs))
-
-bp_dat$Term <- factor(bp_dat$Term, levels = bp_labs)
-cc_dat$Term <- factor(cc_dat$Term, levels = cc_labs)
-mf_dat$Term <- factor(mf_dat$Term, levels = mf_labs)
-
-p1 <- ggplot(dat, aes(x=group, y=factor(Term), group=Term, fill=-log10(weight), size=Significant)) + 
-    geom_line(size=0.5, col="grey45")+
-  geom_point(pch=21, color="black") +
-  facet_grid(rows=vars(ontology), scales = "free", space = "free") +
-  scale_fill_gradient(low = "grey", high = "firebrick3") +
-  theme_bw() +
-    scale_size(name   = "Number of Significant\nGenes",
-             breaks = c(10, 50, 100, 250, 500)) +
-    labs(fill="-log10(p)") + ylab("")
-
-ggsave("~/tonsa_genomics/figures/topgo_enrich.pdf",p1, h=15, w=9)
-
-
-# indiv plots
-
-pbp <- ggplot(bp_dat, aes(x=group, y=factor(Term), group=Term, fill=-log10(weight), size=Significant)) + 
-    geom_line(size=0.5, col="grey45")+
-  geom_point(pch=21, color="black") +
-  #facet_grid(rows=vars(ontology), scales = "free", space = "free") +
-  scale_fill_gradient(low = "grey", high = "firebrick3") +
-  theme_bw() +
-    scale_size(name   = "Number of Significant\nGenes",
-             breaks = c(10, 50, 100, 250, 500)) +
-    labs(fill="-log10(p)") + ylab("") +
-    theme(axis.text=element_text(size=6))
-
-pmf <- ggplot(mf_dat, aes(x=group, y=factor(Term), group=Term, fill=-log10(weight), size=Significant)) + 
-    geom_line(size=0.5, col="grey45")+
-  geom_point(pch=21, color="black") +
-  #facet_grid(rows=vars(ontology), scales = "free", space = "free") +
-  scale_fill_gradient(low = "grey", high = "firebrick3") +
-  theme_bw() +
-    scale_size(name   = "Number of Significant\nGenes",
-             breaks = c(10, 50, 100, 250, 500)) +
-    labs(fill="-log10(p)") + ylab("")
-
-pcc <- ggplot(cc_dat, aes(x=group, y=factor(Term), group=Term, fill=-log10(weight), size=Significant)) + 
-    geom_line(size=0.5, col="grey45")+
-  geom_point(pch=21, color="black") +
-  #facet_grid(rows=vars(ontology), scales = "free", space = "free") +
-  scale_fill_gradient(low = "grey", high = "firebrick3") +
-  theme_bw() +
-    scale_size(name   = "Number of Significant\nGenes",
-             breaks = c(10, 50, 100, 250, 500)) +
-    labs(fill="-log10(p)") + ylab("")
-
-ggsave("~/tonsa_genomics/figures/topgo_enrich_bp.pdf",pbp, h=9, w=6)
-ggsave("~/tonsa_genomics/figures/topgo_enrich_mf.pdf",pmf, h=6, w=7)
-ggsave("~/tonsa_genomics/figures/topgo_enrich_cc.pdf",pcc, h=6, w=7)
 
 ```

@@ -190,7 +190,7 @@ pc <- ggplot(data=mdat, aes(x=gp, y=pi, fill=treatment)) +
 #  coord_cartesian(ylim = ylim1*1.05)+
   scale_fill_manual(values=c("#D3DDDC",'#6699CC',"#F2AD00","#00A08A", "#CC3333"),
                     labels = c("Founding population","Ambient", "Acidic", 
-                               "Warming", "Greenhouse"))
+                               "Warming", "OWA"))
 
 
 ggsave("~/tonsa_genomics/figures/pi_fig.pdf", pc, width = 6, height = 4)

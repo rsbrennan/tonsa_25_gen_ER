@@ -71,24 +71,20 @@ See `tonsa.ipynb` for all analyses.
 ### Figures
 
 - Fig. 1: `plots.R` 
-- Fig. 2: `plots.R`
+- Fig. 2: `af_change.R`
 - Fig. 3: `plots.R`
-- Fig. 4: `af_change.R` 
-- Fig. 5:
-- Fig. 6: `go_enrich.md`
+- Fig. 4: `plots.R` 
 
 Supplemental figures:
-- Fig. S1: `plots.R` and cvtk notebook.
-- Fig. S2: `af_change.R`
-- Fig. S3: `ld.R`
-- Fig. S4: `af_change.R`
-- Fig. S5: `plots.R`
+- Fig. S1: `af_change.R`
+- Fig. S2: `go_enrich.md`
+- Fig. S3: `plots.R`
+- Fig. S4: `plots.R`
+- Fig. S5: `ld.R`
 - Fig. S6: `pi.R`
 - Fig. S7: `af_change.R`
-- Fig. S8: `go_enrich.md`
-- Fig. S9: `af_change.R`
+- Fig. S8: `af_change.R`
+- Fig. S9: `scripts/mitotypes/mitotypes.md`
 - Fig. S10: `scripts/mitotypes/mitotypes.md`
-- Fig. S11: `scripts/mitotypes/mitotypes.md`
-- Fig. S12: `plots.R`
 
 
